@@ -26,6 +26,10 @@ int main(){
     std::cout << food << std::endl;
     std::cout << *ptr << std::endl;
 
+    
+
+
+
 
 
     return 0;
