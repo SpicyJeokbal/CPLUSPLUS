@@ -61,7 +61,7 @@ int main(){
 
     do{
 
-        std::cout << "1.)Read map \n2.) Add item \n3.) Remove item \n4.) Clear map";
+        std::cout << "1.)Read map \n2.) Add item \n3.) Remove item \n4.) Clear map \n";
         std::cin >> choice;
 
         switch(choice){
@@ -70,7 +70,7 @@ int main(){
                     readMap(people);
                 }
                 else{
-                    std::cout << "Map is empty \n";
+                    std::cout << "Map is empty \n\n";
                 }
                 break;
 
@@ -87,14 +87,14 @@ int main(){
                     readMap(people);
                 }
                 else{
-                    std::cout << "Map is empty";    
+                    std::cout << "Map is empty\n\n";    
                 }
                 break;
-            case 5:
+            case 4:
                 people.clear();
 
             default:
-                std::cout << "bitch";
+                std::cout << "bitch\n\n";
         }
     }while(choice != 5);
 
