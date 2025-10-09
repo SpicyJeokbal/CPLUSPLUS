@@ -1,0 +1,47 @@
+
+HTTP SERVER FUNCTION
+
+- listens on a port
+    - create a socket
+    - bind it to an IP + port (0.0.0.0:80808)
+    - mark it as listening to port
+
+- accept client connection
+    - wait for an incoming connection
+    - when client connects, accept it and get a new socket for communication
+
+- receives http request
+    - read raw bytes from client socket
+    - http requests are plain text, 
+        e.g. 
+            GET /index.html HTTP/1.1
+            Host: localhost:8080
+    - parse at least the first line(method, path, protocol)        
+
+- send http response
+    - build a valid http response string:
+            HTTP/1.1 200 OK
+            Content-Type: text/html
+            Content-Length: <length>
+
+            <html>...</html>
+    - send it back to client socket
+    - close the client connection
+
+
+MUST HAVE HEADERS
+    #include <winsock2.h>
+        WSAStartup()  -  MUST CALL ONCE
+        socket() - create a socket
+        bind() - bind to an IP/port
+        listen() - mark socket as passive (waiting for connections)
+        accept() - accept a client connection
+        connect() - for clients (not server side)
+        send() / recv() - data transfer
+        closesocket() - cleanup
+        WSACleanup()   -   MUST CALL BEFORE EXIT
+
+    #include <ws2tcpip.h>    -  IP ADDRESS HANDLING
+        sockaddr_in, sockaddr_in6 (IPv4/IPv6 structs)
+        inet_pton() / inet_ntop() - convert between strings and binary IPs
+        modern extensions for TCP/IP
