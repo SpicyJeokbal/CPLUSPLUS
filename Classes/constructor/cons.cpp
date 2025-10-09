@@ -29,6 +29,11 @@ class Car{
             model = y;
             year = z;
         }
+        /* 
+        Car(std::string x, std::string y, int z) : brand(x), model(y), year(z) {}
+        
+        
+        */
 
 };
 
