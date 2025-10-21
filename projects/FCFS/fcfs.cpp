@@ -48,17 +48,22 @@ int main(){
     }
 
     std::cout << "\nID\tArrival\tBurst\tWaiting\tTurnaround\n";
+    int totalWaiting = 0, totalTurnaround = 0;
     for(int i=0; i<n; i++) {
         std::cout << p[i].id << "\t"
              << p[i].arrivalTime << "\t"
              << p[i].burstTime << "\t"
              << p[i].waiting << "\t"
              << p[i].turnaround << "\n";
+        totalWaiting += p[i].waiting;
+        totalTurnaround += p[i].turnaround;
     }
 
+    double avgWaiting = (double) totalWaiting / n;
+    double avgTurnaround = (double) totalTurnaround / n;
 
-    
-    
+    std::cout << "\nAverage Waiting Time: " << avgWaiting;
+    std::cout << "\nAverage Turnaround Time: " << avgTurnaround << "\n";
 
     return 0;
 }  
