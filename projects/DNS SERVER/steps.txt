@@ -1,0 +1,11 @@
+
+
+Create a UDP socket
+
+Bind to port 53
+
+Receive DNS requests(uses udp so there's no need for listen and accept)
+
+Parse the domain name from the query
+
+Build and send a response
