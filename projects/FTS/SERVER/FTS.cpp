@@ -3,6 +3,9 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <thread>
+#include <map>
+#include <vector>
+#include <fstream>
 #pragma comment(lib, "ws2_32.lib")
 
 bool initializedWinsock();
@@ -10,9 +13,12 @@ SOCKET ftsSocket();
 int bindSocket(SOCKET& ftsSocket);
 void serverListening(SOCKET& ftsSocket);
 void handleClient(SOCKET clientSocket, sockaddr_in clientAddr);
+std::vector<char> readFile(const std::string& filename);
 
 int main(){
-    
+        //   name of photo,   photo in bytes
+    std::map<std::string, std::vector<char>> photoLibrary;
+
     if (!initializedWinsock()) return 1;
     SOCKET ftsSocket = ftsSocketCreation();
     bindSocket(ftsSocket);
@@ -120,6 +126,16 @@ void handleClient(SOCKET clientSocket, sockaddr_in clientAddr){
     }
     closesocket(clientSocket);
 
+}
+
+//reads photo, turn it into bytes and store it in vector
+std::vector<char> readFile(const std::string& filename) {
+    std::ifstream file(filename, std::ios::binary);
+    if (!file) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return {};
+    }
+    return std::vector<char>((std::istreambuf_iterator<char>(file)), {});
 }
 
 
