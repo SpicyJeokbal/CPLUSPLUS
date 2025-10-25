@@ -6,6 +6,7 @@
 #include <map>
 #include <vector>
 #include <fstream>
+#include <limits>
 #pragma comment(lib, "ws2_32.lib")
 
 bool initializedWinsock();
@@ -14,6 +15,7 @@ int bindSocket(SOCKET& ftsSocket);
 void serverListening(SOCKET& ftsSocket);
 void handleClient(SOCKET clientSocket, sockaddr_in clientAddr);
 std::vector<char> readFile(const std::string& filename);
+void savePhotoBytes(std::map<std::string, std::vector<char>>& photoLibrary);
 
 int main(){
         //   name of photo,   photo in bytes
@@ -137,5 +139,41 @@ std::vector<char> readFile(const std::string& filename) {
     }
     return std::vector<char>((std::istreambuf_iterator<char>(file)), {});
 }
+
+void savePhotoBytes(std::map<std::string, std::vector<char>>& photoLibrary){
+    int no_of_items {};
+
+    std::cout << "How many photos do you want to add? ";
+    std::cin >> no_of_items;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    for (int i {0}; i < no_of_items; ++i){
+        std::string photoName, filePath;
+
+        std::cout << "\nPhoto " << i << "\n";
+        std::cout << "Enter a name for the photo: ";
+        std::getline(std::cin, photoName);
+
+        std::cout << "Enter file path: ";
+        std::getline(std::cin, filePath);
+
+        //read bytes
+        auto photoData = readFile(filePath);
+
+        if(photoData.empty()){
+            std::cerr << "Skipping " << photoName << " (couldn't read the file)\n";
+            continue;
+        }
+
+        //save
+        photoLibrary[photoName] = std::move(photoData);
+        std::cout << "Added " << photoName << " (" << photoLibrary[photoName].size() << " bytes)\n";
+
+    }
+    std::cout << "All photos processed\n";
+
+}
+
+
 
 
