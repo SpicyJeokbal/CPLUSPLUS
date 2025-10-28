@@ -10,12 +10,14 @@
 #pragma comment(lib, "ws2_32.lib")
 
 bool initializedWinsock();
-SOCKET ftsSocket();
+SOCKET ftsSocketCreation();
 int bindSocket(SOCKET& ftsSocket);
-void serverListening(SOCKET& ftsSocket);
-void handleClient(SOCKET clientSocket, sockaddr_in clientAddr);
+void serverListening(SOCKET& ftsSocket, std::map<std::string, std::vector<char>>& photoLibrary);
+void handleClient(SOCKET clientSocket, sockaddr_in clientAddr, std::map<std::string, std::vector<char>>& photoLibrary);
 std::vector<char> readFile(const std::string& filename);
 void savePhotoBytes(std::map<std::string, std::vector<char>>& photoLibrary);
+
+
 
 int main(){
         //   name of photo,   photo in bytes
@@ -24,6 +26,7 @@ int main(){
     if (!initializedWinsock()) return 1;
     SOCKET ftsSocket = ftsSocketCreation();
     bindSocket(ftsSocket);
+    serverListening(ftsSocket, photoLibrary);
 
     return 0;
 }
@@ -78,7 +81,7 @@ int bindSocket(SOCKET& ftsSocket){
     return 0;
 }
 
-void serverListening(SOCKET& ftsSocket){
+void serverListening(SOCKET& ftsSocket, std::map<std::string, std::vector<char>>& photoLibrary){
     //accepts multiple clients 
     while(true){
         sockaddr_in clientAddr;
@@ -91,7 +94,7 @@ void serverListening(SOCKET& ftsSocket){
         }
 
         
-        std::thread clientThread(handleClient, clientSocket, clientAddr);
+        std::thread clientThread(handleClient, clientSocket, clientAddr, std::ref(photoLibrary));
         clientThread.detach(); // run independently
 
             if (GetAsyncKeyState(VK_ESCAPE)) break;
@@ -102,7 +105,7 @@ void serverListening(SOCKET& ftsSocket){
 }
 
 /* WILL CHANGE LATER */
-void handleClient(SOCKET clientSocket, sockaddr_in clientAddr){
+void handleClient(SOCKET clientSocket, sockaddr_in clientAddr, std::map<std::string, std::vector<char>>& photoLibrary){
 
     try {
         std::cout << "Client connected to thread " << std::this_thread::get_id() << "\n";
@@ -110,24 +113,68 @@ void handleClient(SOCKET clientSocket, sockaddr_in clientAddr){
         inet_ntop(AF_INET, &clientAddr.sin_addr, clientIP, INET_ADDRSTRLEN);
         std::cout << "Client connected from " << clientIP << ":" << ntohs(clientAddr.sin_port) << "\n";
 
+        //role checker
+        char roleBuffer[32];
+        recv(clientSocket, roleBuffer, sizeof(roleBuffer), 0);
 
-        const char *httpResponse =  "HTTP/1.1 200 OK\r\n"
-                                    "Content-Type: text/plain\r\n"
-                                    "Content-Length: 37\r\n"
-                                    "Connection: close\r\n"
-                                    "\r\n"
-                                    "You are now connected to the server side...";
-        int byteSent = send(clientSocket, httpResponse, strlen(httpResponse), 0);
-        if(byteSent == SOCKET_ERROR){
-            std::cerr << "Send failed. Error: " << WSAGetLastError() << "\n";
+        
+        
+
+        std::string role(roleBuffer);
+        if(role.find("ADMIN") != std::string::npos){
+            //admin
+            std::cout << "Admin connected\n";
+            std::string reply = "Hello Admin. You are now connected to the server\n";
+            send(clientSocket, reply.c_str(), reply.size(), 0);
+            return;
+        }
+        else{
+            //client
+            //sendlist of all photos
+            std::string list = "Available photos:\n";
+            for (const auto& [name, _] : photoLibrary)
+                list += "- " + name + "\n";
+            list += "\nEnter photo name to Download: ";
+            send(clientSocket, list.c_str(), list.size(), 0);
+
+            char buffer[1024];
+            int bytesReceived{};
+
+            //wait for clients request
+            bytesReceived = recv(clientSocket, buffer, sizeof(buffer) -1, 0);
+            if (bytesReceived <= 0){
+                std::cout << "Clien disconnected\n";
+                closesocket(clientSocket);
+                return;
+            }
+
+            std::cout << "Client connected\n";
+            buffer[bytesReceived] = '\0';
+            std::string requestedPhoto = buffer;
+
+            //check if photo exists
+            auto it = photoLibrary.find(requestedPhoto);
+            if(it == photoLibrary.end()){
+                std::string msg = "Photo not found\n";
+                send(clientSocket, msg.c_str(), msg.size(), 0);
+            }
+            else{
+                const auto& data = it->second;
+                //send file size first
+                uint32_t fileSize = data.size();
+                send(clientSocket, reinterpret_cast<char*>(&fileSize), sizeof(fileSize), 0);
+                //send photo bytes
+                send(clientSocket, data.data(), size(data), 0);
+                std::cout << "Sent photo: " << requestedPhoto << " (" << fileSize << "bytes)\n";
+            }
         }
 
-        std::cout << "Client disconnected from thread " << std::this_thread::get_id() << "\n";
+        
     } catch (const std::exception &e){
         std::cerr << "Error in thread: " << e.what() << "\n";
     }
     closesocket(clientSocket);
-
+    std::cout << "Connection closed on thread " << std::this_thread::get_id() << "\n";
 }
 
 //reads photo, turn it into bytes and store it in vector
@@ -139,6 +186,7 @@ std::vector<char> readFile(const std::string& filename) {
     }
     return std::vector<char>((std::istreambuf_iterator<char>(file)), {});
 }
+
 
 void savePhotoBytes(std::map<std::string, std::vector<char>>& photoLibrary){
     int no_of_items {};
