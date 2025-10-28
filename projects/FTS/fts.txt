@@ -1,0 +1,26 @@
+2. File Transfer Server
+
+Send and receive files between a client and server.
+
+Implement chunked sending and checksum verification.
+
+Optional: add encryption using XOR or a simple custom cipher.
+
+Skills honed: stream I/O, binary file handling, protocol design.
+
+Server Side
+- FTS functions the same as HTTP server
+- storage for photo using vector
+- convert Photo(png, jpeg, bmp) into binary
+- send the copy of the binary photo
+
+client
+- converts the copy of binary back into a photo
+
+
+
+admin  <--->  File transer server <-----> client
+- admin is the only one that can save photos to the server
+- client can only request copies of photos
+- after client connects to the server, the server should show the client the list of photos for the client to pick from
+- after a client/admin connects, they should send a message about their role(ROLE:ADMIN, ROLE:CLIENT);
