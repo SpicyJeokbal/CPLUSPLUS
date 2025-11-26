@@ -78,14 +78,16 @@ void handleServer(SOCKET& clientSocket){
 
     char buffer[4096];
 
-    int bytesReceived = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
-    if(bytesReceived > 0){
+    while(true) {
+        int bytesReceived = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
         
-        buffer[bytesReceived] = '\0'; //null terminate 
-        std::cout << "Request:\n" << buffer << "\n";
+        if (bytesReceived <= 0){
+            std::cout << "Server disconnected\n";
+            break;
+        }
 
-        const char *clientReply = "Message received\n";
-        send(clientSocket, clientReply, strlen(clientReply), 0);
+        buffer[bytesReceived] = '\0';
+        std::cout << buffer << "\n";
     }
 
     closesocket(clientSocket);
