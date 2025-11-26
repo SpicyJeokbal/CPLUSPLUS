@@ -27,6 +27,7 @@ int main(){
     SOCKET ftsSocket = ftsSocketCreation();
     bindSocket(ftsSocket);
     serverListening(ftsSocket, photoLibrary);
+    savePhotoBytes(photoLibrary);
 
     return 0;
 }
@@ -101,7 +102,7 @@ void serverListening(SOCKET& ftsSocket, std::map<std::string, std::vector<char>>
 
     }
     closesocket(ftsSocket);
-    WSACleanup();
+
 }
 
 /* WILL CHANGE LATER */
@@ -115,17 +116,33 @@ void handleClient(SOCKET clientSocket, sockaddr_in clientAddr, std::map<std::str
 
         //role checker
         char roleBuffer[32];
-        recv(clientSocket, roleBuffer, sizeof(roleBuffer), 0);
-
+        int bytes = recv(clientSocket, roleBuffer, sizeof(roleBuffer), 0);
+        if(bytes <= 0) return;
+        roleBuffer[bytes] = '\0';
         
-        
-
         std::string role(roleBuffer);
         if(role.find("ADMIN") != std::string::npos){
             //admin
             std::cout << "Admin connected\n";
             std::string reply = "Hello Admin. You are now connected to the server\n";
             send(clientSocket, reply.c_str(), reply.size(), 0);
+
+            //send list of photos saved in vector, if there's anything else send a message saying "empty photo library"
+            int libraryStatus = photoLibrary.empty();
+            if(libraryStatus == 1){
+                std::string ServerMsg = "Photo library is emptyy\n";
+                send(clientSocket, ServerMsg.c_str(), ServerMsg.size(), 0);
+                return;
+            }
+            else{
+                std::string libMsg =  "Photo Library contents\n";
+                
+                for (const auto& item : photoLibrary){
+                    libMsg += "Name: " + item.first + " size: " + std::to_string(item.second.size()) + " bytes\n";
+                }
+                
+                send(clientSocket, libMsg.c_str(), libMsg.size(), 0);
+            }
             return;
         }
         else{
