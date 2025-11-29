@@ -132,7 +132,33 @@ void handleClient(SOCKET clientSocket, sockaddr_in clientAddr, std::map<std::str
             if(libraryStatus == 1){
                 std::string ServerMsg = "Photo library is emptyy\n";
                 send(clientSocket, ServerMsg.c_str(), ServerMsg.size(), 0);
-                return;
+                
+                std::string adminChoice = "1.) Upload \n2.) Request content \nChoose your option: ";
+                send(clientSocket, adminChoice.c_str(), adminChoice.size(), 0);
+
+                char choiceBuffer[32];
+                int bytes = recv(clientSocket, choiceBuffer, sizeof(choiceBuffer), 0);
+                if(bytes <= 0) return;
+                roleBuffer[bytes] = '\0';
+                
+                //need to add error checker
+                std::string choice(choiceBuffer);
+                if(choice.find("1") != std::string::npos){
+                    std::string case1Msg = "Upload an image\n";
+                    send(clientSocket, case1Msg.c_str(), case1Msg.size(), 0);
+                    return;
+                }
+                else if(choice.find("2") != std::string::npos){
+                    std::string case2Msg = "Upload an image\n";
+                    send(clientSocket, case2Msg.c_str(), case2Msg.size(), 0);
+                    return;
+                }
+                else{
+                    std::string choiceMsg = "Exiting..\n";
+                    send(clientSocket, choiceMsg.c_str(), choiceMsg.size(), 0);
+                    return;
+                }
+
             }
             else{
                 std::string libMsg =  "Photo Library contents\n";
@@ -142,6 +168,10 @@ void handleClient(SOCKET clientSocket, sockaddr_in clientAddr, std::map<std::str
                 }
                 
                 send(clientSocket, libMsg.c_str(), libMsg.size(), 0);
+
+                std::string adminChoice = "1.) Upload \n2.) Request content \nChoose your option: ";
+                send(clientSocket, adminChoice.c_str(), adminChoice.size(), 0);
+
             }
             return;
         }
