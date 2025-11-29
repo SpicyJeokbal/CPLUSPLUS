@@ -12,18 +12,18 @@
 
 
 bool initializedWinsock();
-SOCKET createClientSocket();
-void handleServer(SOCKET& clientSocket);
+SOCKET createAdminSocket();
+void handleServer(SOCKET& adminSocket);
 
 
 int main(){
     
     if (!initializedWinsock()) return 1;
 
-    SOCKET clientSocket = createClientSocket();
-    if(clientSocket == INVALID_SOCKET) return 1;
+    SOCKET adminSocket = createAdminSocket();
+    if(adminSocket == INVALID_SOCKET) return 1;
 
-    handleServer(clientSocket);
+    handleServer(adminSocket);
     
     
     return 0;
@@ -45,9 +45,9 @@ bool initializedWinsock(){
 
 }
 
-SOCKET createClientSocket(){
-    SOCKET clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if(clientSocket == INVALID_SOCKET){
+SOCKET createAdminSocket(){
+    SOCKET adminSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if(adminSocket == INVALID_SOCKET){
         std::cerr << "Client socket creation failed. Error: " << WSAGetLastError << "\n";
         WSACleanup();
         return INVALID_SOCKET;
@@ -58,28 +58,28 @@ SOCKET createClientSocket(){
     serverAddr.sin_port = htons(10000);
     inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
 
-    int clientSocketConnection = connect(clientSocket, (sockaddr*)&serverAddr, sizeof(serverAddr));
+    int clientSocketConnection = connect(adminSocket, (sockaddr*)&serverAddr, sizeof(serverAddr));
     if(clientSocketConnection == SOCKET_ERROR){
         std::cerr << "Connection failed. Error: " << WSAGetLastError() << "\n";
-        closesocket(clientSocket);
+        closesocket(adminSocket);
         WSACleanup();
         return INVALID_SOCKET;
     }
 
     std::cout << "Client to Server connection established\n";
-    return clientSocket;
+    return adminSocket;
 }
 
-void handleServer(SOCKET& clientSocket){
+void handleServer(SOCKET& adminSocket){
 
     //send role
     const char* role = "ADMIN";
-    send(clientSocket, role, strlen(role), 0);
+    send(adminSocket, role, strlen(role), 0);
 
     char buffer[4096];
 
     while(true) {
-        int bytesReceived = recv(clientSocket, buffer, sizeof(buffer) - 1, 0);
+        int bytesReceived = recv(adminSocket, buffer, sizeof(buffer) - 1, 0);
         
         if (bytesReceived <= 0){
             std::cout << "Server disconnected\n";
@@ -88,7 +88,15 @@ void handleServer(SOCKET& clientSocket){
 
         buffer[bytesReceived] = '\0';
         std::cout << buffer << "\n";
-    }
 
-    closesocket(clientSocket);
+        if(strstr(buffer, "Choose your option")){
+
+            std::string choice;
+            std::cout << "Your choice: ";
+            std::getline(std::cin, choice);
+
+            send(adminSocket, choice.c_str(), choice.size(), 0);
+        }
+    }
+    closesocket(adminSocket);
 }
