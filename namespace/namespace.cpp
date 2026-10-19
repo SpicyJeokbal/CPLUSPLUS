@@ -15,19 +15,42 @@ To separate your code from code in libraries */
 
 #include <bits/stdc++.h>
 
-namespace mynameSpace{
-    int x = 42;
+namespace _namespaceA{
+    int x{10};
 }
+
+namespace _namespaceB{
+    int x{20};
+
+    struct _users{
+        std::string _name;
+        int age{};
+    };
+}
+
+ 
 
 int main(){
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(nullptr);
     
-    int x = 1;
+    _namespaceB::_users user;
 
-    std::cout << mynameSpace::x;
+    int x{1};
+
+    /* std::cout << _namespaceA::x << std::endl;
+    std::cout << _namespaceB::x << std::endl;
+    std::cout << x; */
+
+    std::cout << "Name: ";
+    std::getline(std::cin, user._name);
+
+    std::cout << "Age: ";
+    std::cin >> user.age;
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
 
-
+    std::cout << user._name << "\t" << user.age << std::endl;
 
 }
