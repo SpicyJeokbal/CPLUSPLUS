@@ -23,11 +23,13 @@ enum Level {
     HIGH //now 3
 };
 
+enum class Fruit { Apple = 1, Banana, Cherry};
+
 
 int main(){
 
     //An enum is a special type that represents a group of constants (unchangeable values).
-    enum Level myVar = MEDIUM;
+    /* enum Level myVar = MEDIUM;
 
     switch(myVar){
         case 1:
@@ -39,8 +41,30 @@ int main(){
         case 3:
             std::cout << "High";
             break;
+    } */
+
+    //iterate through an Enum
+
+
+    /* //1. use the underlying integer values
+    for(int i = LOW; i <= HIGH; ++i){
+        std::cout << i << "\n";
     }
 
+    //2. Store the enum in an array
+
+    Level lvl[] = {LOW, MEDIUM, HIGH};
+
+    for(Level lvl : lvl){
+        std::cout << lvl << "\n";
+    } */
+
+    //3. use enum class with arrays
+    Fruit fruits[] = {Fruit::Apple, Fruit::Banana, Fruit::Cherry};
+
+    for(auto f : fruits){
+        std::cout << static_cast<int>(f)<< "\n";
+    }
 
 
     return 0;
