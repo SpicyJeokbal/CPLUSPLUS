@@ -9,6 +9,20 @@ Date: 06/26/2025
 
 
 //Function overloading allows multiple functions to have the same name, as long as their parameters are different in type or number:
+//you cannot overload a function based on their return type
+
+/* 
+int sum(int a, int b);
+double sum(int a, int b); error
+*/
+
+/* 
+1. Too ambiguous
+2. Makes code harder to maintain
+3. Increases the compile time. The compiler checks all overload function and choose the best match,
+   which adds complexity during compilation
+*/
+
 
 /* int plusFuncInt(int x, int y) {
   return x + y;
