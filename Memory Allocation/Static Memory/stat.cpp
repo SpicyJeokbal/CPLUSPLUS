@@ -18,9 +18,16 @@ The three variables below have different lifespan
 int _global_number{10};
 
 int main(){
-    
-    //exist for the entire program even tho its declared inside main()
-    //stored in the data segment
+    /* 
+
+    exist for the entire program even tho its declared inside main()
+    stored in the data segment
+
+    When should u use static?
+    - if you want the variable to be remembered all throught out program
+    - when you want a value shared across all calls
+    - class variables shared by all objects
+     */
     static int count{5};
     
     //normally exist when the block or function is executing
