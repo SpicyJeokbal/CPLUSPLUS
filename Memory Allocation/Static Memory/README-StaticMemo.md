@@ -22,4 +22,9 @@ Heap
 Stack
 - Commonly holds function call information and automatic variables
 
+Static storage duration
+- GLobal variables and local variables declared with static exist throughout the programs lifetime
+
+
+
 
