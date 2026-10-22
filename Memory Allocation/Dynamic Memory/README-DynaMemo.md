@@ -24,6 +24,21 @@ std::cout << *ptr; // BAD
 ```
 - ptr still contains the old address, but that memory no longer belongs to your program.
 
+```
+int* ptr;
+
+{
+    int x = 10;
+    ptr = &x;
+}
+
+std::cout << *ptr; // BAD
+```
+-x is destroyed because it was on the stack.
+
+Now ptr points to memory that no longer contains a valid x.
+
+
 2. Double delete
 ```
 int* ptr = new int(5);
