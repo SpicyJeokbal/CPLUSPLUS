@@ -24,7 +24,7 @@ int main(){
     stored in the data segment
 
     When should u use static?
-    - if you want the variable to be remembered all throught out program
+    - if you want the variable to be remembered all throughout program
     - when you want a value shared across all calls
     - class variables shared by all objects
      */
