@@ -7,7 +7,14 @@ Date: 06/26/2025
 #include <iostream>
 #include <string>
 
-//inside class definition
+/* 
+inside class definition
+you define the function directly inside the class
+pros:
+- easier to read for small classes
+- good for simple functions
+- less code to write
+*/
 class myClass{
     public:
         void myfunction(){
@@ -16,15 +23,51 @@ class myClass{
 };
 
 
-//outside class definition
+/*  
+outside class definition
+inside the class you only declare the function
+*/
 class Car{
     public:
         void sound();
 };
 
-//this is definition of member
+/*
+define the function outside of the class using Scope Resolution operator `::`
+
+`Car::` means that sound() function belongs to Car class
+
+*/
 void Car::sound(){
     std::cout << "broom broom";
+}
+
+//Why use outside function to begin with
+//Imagine this:
+class Player {
+public:
+    void move(){/* 50 lines of code */}
+    void attack(){/* 100 lines of code */}
+    void heal(){/* 50 lines of code */}
+    //the class becomes too huge and hard to read
+};
+
+//instead
+class Player {
+public:
+    void move();
+    void attack();
+    void heal();
+};
+
+void Player::move(){
+    //code
+}
+void Player::attack(){
+    //code
+}
+void Player::heal(){
+    //code
 }
 
 
