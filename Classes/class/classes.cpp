@@ -8,6 +8,11 @@ Date: 06/26/2025
 #include <iostream>
 #include <string>
 
+/* 
+CLass group variables(data) and functions(behavior) together
+
+*/
+
 class MyClass {
     public:
         int myNum;
@@ -16,7 +21,16 @@ class MyClass {
 
 
 int main(){
+    /* 
+    A class by itself doesn't store data, you must create it yourself
+    */
 
+
+    //object declaration(object instantiation)
+    /* 
+    MyClass = class type
+    class 1 = object of that type
+    */
     MyClass class1;
 
     class1.myNum = 1;
