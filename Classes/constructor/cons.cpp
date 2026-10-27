@@ -13,10 +13,40 @@ Constructor Rules
     It has no return type (not even void).
     It is usually declared public.
     It is automatically called when an object is created.
+    Must declare the variables before the constructor can use it
+*/
+
+/* 
+A constructor is a convenient way to guarantee that an object
+starts with the values you want. It isn't mandatory, but you
+should never use an uninitialized variable or member expecting
+it to contain a meaningful value.
+
+A class constructor initializes an object when created, so you
+dont have to manually assign each member variable afterward. 
+Basically, you create the object first, then assign its value 
+one by one.
+
+With constructor, creating an object automatically initializes its
+member variables using the values you provide. No manual assigning
+afterward.
+
+In the instance, you just have to provide the values when creating
+the object, and the constructor assigns those values to the objects
+for you.
+*/
+
+/* 
+A constructor acts like a middleman that initializes an object's values for you when you create it.
+
 */
 
 
-//inline constructor
+
+//===========inline constructor===========
+/* 
+Essentially, the same as inside class definition(found in class.cpp #14)
+*/
 class Car{
 
     public:
@@ -31,13 +61,13 @@ class Car{
         }
         /* 
         Car(std::string x, std::string y, int z) : brand(x), model(y), year(z) {}
-        
-        
         */
-
 };
 
-//constructor declared inside but defined outside
+//===========Outside defined constructor===========
+/* 
+Essentially, the same as outside class definition(found in class.cpp #14)
+ */
 class Name{
 
     public:
@@ -48,6 +78,9 @@ class Name{
 
 };
 
+/* 
+Scope resolution operator, used to define an outside constructor 
+*/
 Name::Name(std::string x, std::string y, int z){
     Fname = x;
     Lname = y;
@@ -55,7 +88,7 @@ Name::Name(std::string x, std::string y, int z){
 }
 
 
-//constructor overloading
+//===========constructor overloading===========
 
 class Phone{
     public:
