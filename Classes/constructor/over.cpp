@@ -13,6 +13,22 @@ _alloc(){
 }
 /*
 
+/* 
+Member initializer list takes precedence over Inline default member initializer
+`
+class Test {
+public:
+    int x = 10;  // default member initializer
+
+    Test() : x(20) {}
+};
+`
+The output will be 20
+The compiler ignores the = 10 because x was explicitly initialized in the constructor's initializer list.
+
+*/
+
+
 /*
 ==========================================================
 1. Member Initializer list
