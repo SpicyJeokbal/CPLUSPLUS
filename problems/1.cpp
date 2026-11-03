@@ -6,8 +6,6 @@ Was bored, so I created a code that used the ff:class, class access specifiers,
 constructor overloading, and arrays 
 */
 
-
-
 class _ab{
 protected:
     struct _s{
