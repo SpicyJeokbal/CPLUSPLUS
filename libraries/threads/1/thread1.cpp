@@ -15,6 +15,7 @@ int main(){
     
     std::thread t1(sayHello);
 
+    //this is essentially a sync -- waits for t1 to finish
     t1.join(); //main waits for 't1' to finish
 
     
